@@ -59,6 +59,9 @@ public final class AccessToWaterTimeSeriesDao extends JooqDao<TimeSeriesProfile>
         String cursorOffice = null;
         String cursorLocId = null;
 
+        //TODO: Need to update this query to get notes, refresh date from a2w_loc2 view,
+        // bounding office, kind from location
+        // and active attribute from ts
         Condition officeCondition = retrievalParameters.getOfficeId()
                 .map(AV_A2W_TS_CODES_BY_LOC2.DB_OFFICE_ID::eq)
                 .orElse(noCondition());
@@ -118,7 +121,12 @@ public final class AccessToWaterTimeSeriesDao extends JooqDao<TimeSeriesProfile>
                             String officeId = row.get(AV_A2W_TS_CODES_BY_LOC2.DB_OFFICE_ID);
 
                             TimeSeriesMetaData tsId = buildTsId(row);
-                            locationToTsTypeMap.computeIfAbsent(new InsensitiveCwmsId(CwmsId.buildCwmsId(locationId, officeId)),
+                            locationToTsTypeMap.computeIfAbsent(new InsensitiveCwmsId(new CwmsId.Builder()
+                                            .withOfficeId(officeId)
+                                    .withName(locationId)
+                                    .withBoundingOfficeId(null) //TODO: Need to update this to get bounding office from location
+                                    .withKind(null) //TODO: Need to update this to get kind from location
+                                    .build()),
                                             k -> new LinkedHashMap<>()).put(tsTypeFromRow, tsId);
                         })
         );
@@ -151,6 +159,7 @@ public final class AccessToWaterTimeSeriesDao extends JooqDao<TimeSeriesProfile>
                         .withTimezoneName(timeZoneId)
                         .withTimeSeriesId(timeSeriesId)
                         .withIntervalOffsetMinutes(intervalUtcMinuteOffset.longValue())
+                        .withActive(true)//TODO: need to get this from db
                         .build())
                 .build();
     }

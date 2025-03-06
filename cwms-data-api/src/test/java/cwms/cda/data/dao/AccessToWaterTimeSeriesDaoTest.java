@@ -127,6 +127,7 @@ public final class AccessToWaterTimeSeriesDaoTest extends DataApiTestIT {
             }
         }, CwmsDataApiSetupCallback.getWebUser());
 
+        //TODO: need to get this store call working, also need to apply fix in controller IT
         databaseLink.connection(c -> {
             DSLContext context = getDslContext(c, databaseLink.getOfficeId());
             // Call a2w store procedure
@@ -204,6 +205,7 @@ public final class AccessToWaterTimeSeriesDaoTest extends DataApiTestIT {
     public void testRetrieval() throws Exception
     {
         System.out.println("TESTING A2W");
+        //TODO: Need to write test for dao here
     }
 
 
