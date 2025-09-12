@@ -103,7 +103,7 @@ public class CwmsDataApiSetupCallback implements BeforeAllCallback,AfterAllCallb
         }
         else
         {
-            ret = Dao.versionAsInteger(tmp);
+            ret = Dao.versionAsInteger(tmp.replaceAll("-RC.*", "").replace("-","."));
         }
         return ret;
     }
@@ -220,6 +220,7 @@ public class CwmsDataApiSetupCallback implements BeforeAllCallback,AfterAllCallb
                 user = cwmsDb.getUsername();
             }
             logger.atInfo().log(String.format("Running %s as %s %s", data, user, cwmsDb.getPassword()));
+            logger.atInfo().log("Webuser = " + webUser);
             cwmsDb.executeSQL(loadResourceAsString(user_resource[1]).replace("&pduser", cwmsDb.getPdUser())
                                                                     .replace("&user", cwmsDb.getUsername())
                                                                     .replace("&webuser", webUser)
